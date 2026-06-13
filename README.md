@@ -1,5 +1,9 @@
 # ⚡ GridGuard — Electricity Theft Detection
 
+🚀 **Live Demo:** [gridguard-demo.streamlit.app](https://gridguard-demo.streamlit.app/)
+
+> **Test the dashboard instantly** — upload `sample_labeled_60_meters.csv` (included in the repo) to see ranked suspects, SHAP explanations, and revenue estimates on real sample data.
+
 GridGuard ranks electricity meters by how likely they are to be **stealing power**,
 explains *why* each one was flagged, and estimates the **revenue an inspection crew
 can recover** under a realistic monthly visit budget. It runs **entirely on CPU**.
