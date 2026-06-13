@@ -31,10 +31,36 @@ st.set_page_config(page_title="GridGuard — Theft Detection", layout="wide",
 
 @st.cache_resource
 def _load_bundle():
+    """Load the trained bundle, or train one on first run.
+
+    On hosts with no build step (e.g. Streamlit Community Cloud) the model file
+    won't exist on first boot, so we train a fresh one on synthetic data and
+    cache it for the container's lifetime. Sizes are env-tunable to fit small
+    free-tier instances:
+        GRIDGUARD_USERS=1500          # synthetic meters to train on
+        GRIDGUARD_TRAIN_NEURAL=0      # set 1 for CNN/LSTM (requires torch)
+    """
     try:
         return load_artifacts()
     except FileNotFoundError:
-        return None
+        pass
+
+    import os
+    from gridguard.config import Config
+    from gridguard.pipeline import run_pipeline, save_artifacts
+    from gridguard.models import HAS_TORCH
+
+    cfg = Config()
+    cfg.synthetic.n_users = int(os.environ.get("GRIDGUARD_USERS", 1500))
+    # Default to no neural nets on Cloud (torch may not be installed)
+    default_neural = "1" if HAS_TORCH else "0"
+    train_neural = os.environ.get("GRIDGUARD_TRAIN_NEURAL", default_neural) != "0"
+    with st.spinner("First run on this server: training the model "
+                    "(~30–60s, happens once) …"):
+        art = run_pipeline(cfg, prefer_synthetic=True,
+                           train_neural=train_neural, verbose=False)
+        save_artifacts(art)
+    return load_artifacts()
 
 
 @st.cache_resource
@@ -42,11 +68,17 @@ def _explainer(_bundle):
     return ShapExplainer(_bundle["lgbm"])
 
 
-def _load_demo_df() -> pd.DataFrame | None:
+@st.cache_data
+def _load_demo_df() -> pd.DataFrame:
+    """Return a demo dataset for the 'Use bundled demo' button — read from disk
+    if present, otherwise generate a small synthetic one on the fly."""
     p = RAW_DIR / "sgcc.csv"
     if p.exists():
         return pd.read_csv(p)
-    return None
+    from gridguard.config import SyntheticConfig
+    from gridguard.data.synthetic import generate_sgcc_like
+    demo = generate_sgcc_like(SyntheticConfig(n_users=400, n_days=730, seed=123))
+    return demo.reset_index()
 
 
 # ---------------------------------------------------------------- sidebar ----

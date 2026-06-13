@@ -22,7 +22,9 @@ from .config import Config, DEFAULT, MODELS_DIR
 from .data import load_dataset, clean_consumption
 from .features import build_features, to_sequences
 from .imbalance.sampling import class_balance
-from .models import LGBMTheftModel, CNN1D, LSTMAttention, TorchSequenceModel
+from .models import LGBMTheftModel, HAS_TORCH
+if HAS_TORCH:
+    from .models import CNN1D, LSTMAttention, TorchSequenceModel
 from .evaluation import evaluate_scores, metrics_table
 
 
@@ -105,7 +107,7 @@ def run_pipeline(cfg: Config = DEFAULT,
     results["LightGBM"] = evaluate_scores(yte, s, monthly_te, fold_eval)
 
     torch_models = {}
-    if train_neural:
+    if train_neural and HAS_TORCH:
         seq_len = seqs.shape[1]
         specs = {
             "1D-CNN": CNN1D(),

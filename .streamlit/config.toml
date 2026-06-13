@@ -1,11 +1,16 @@
-# Streamlit settings for headless / cloud (Render) operation.
+# Streamlit settings for headless / cloud (Streamlit Community Cloud) operation.
 [server]
 headless = true
 enableCORS = false
 enableXsrfProtection = false
+maxUploadSize = 200
 
 [browser]
 gatherUsageStats = false
 
 [theme]
 primaryColor = "#2d6a4f"
+backgroundColor = "#0e1117"
+secondaryBackgroundColor = "#1a1f2e"
+textColor = "#fafafa"
+font = "sans serif"
