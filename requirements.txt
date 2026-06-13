@@ -1,0 +1,16 @@
+# GridGuard — CPU-only electricity theft detection
+# Tested with Python 3.10–3.13
+
+numpy>=1.24
+pandas>=2.0
+scipy>=1.10
+scikit-learn>=1.3
+imbalanced-learn>=0.11
+lightgbm>=4.0
+torch>=2.1            # CPU build is fine: pip install torch --index-url https://download.pytorch.org/whl/cpu
+shap>=0.44
+matplotlib>=3.7
+streamlit>=1.30
+pyyaml>=6.0
+joblib>=1.3
+tqdm>=4.66

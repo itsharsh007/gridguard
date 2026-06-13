@@ -1,0 +1,21 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+
+# data + artifacts (regenerated at build/run time, see render.yaml)
+data/raw/*.csv
+data/processed/*
+models/*.joblib
+models/*.csv
+reports/*
+!data/raw/.gitkeep
+
+# local-only demo CSVs (regenerate with scripts/generate_data.py)
+samples/
+
+.ipynb_checkpoints/
+.pytest_cache/
+.DS_Store

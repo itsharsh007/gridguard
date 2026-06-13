@@ -1,0 +1,20 @@
+# Render Blueprint for GridGuard (https://render.com).
+# Deploy: push this repo to GitHub, then on Render → New → Blueprint → pick the repo.
+#
+# The model + demo data are NOT committed to git (they're regenerated here), so the
+# build trains a fresh model into the image; the running service then serves it.
+services:
+  - type: web
+    name: gridguard
+    runtime: python
+    plan: free                      # 512 MB RAM — we keep the build lean to fit
+    buildCommand: |
+      pip install --upgrade pip
+      pip install torch --index-url https://download.pytorch.org/whl/cpu
+      pip install -r requirements.txt
+      python scripts/generate_data.py --users 2000 --days 730
+      python scripts/train.py
+    startCommand: streamlit run app/streamlit_app.py --server.port $PORT --server.address 0.0.0.0
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.7"

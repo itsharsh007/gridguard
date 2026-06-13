@@ -1,0 +1,35 @@
+# GridGuard configuration overrides.
+# Only keys you want to change need to appear here; everything else falls back to
+# the defaults in gridguard/config.py. Load with: Config.from_yaml("config.yaml").
+
+synthetic:
+  n_users: 4000
+  n_days: 730
+  theft_rate: 0.085
+  seed: 42
+
+clean:
+  interpolate_limit: 7
+  outlier_method: iqr      # iqr | quantile | none
+  iqr_k: 3.0
+
+features:
+  rolling_windows: [7, 30]
+  drop_threshold: 0.5
+  autocorr_lags: [1, 7]
+
+model:
+  imbalance: focal         # none | smote | scale_pos_weight | focal
+  focal_gamma: 2.0
+  focal_alpha: 0.25
+  lgbm_n_estimators: 600
+  lgbm_learning_rate: 0.03
+  nn_epochs: 12
+  nn_batch_size: 256
+  nn_weekly_downsample: true
+
+eval:
+  top_k: 200
+  tariff_per_kwh: 0.12
+  recovery_months: 12
+  avg_theft_underreport: 0.6

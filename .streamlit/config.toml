@@ -1,0 +1,11 @@
+# Streamlit settings for headless / cloud (Render) operation.
+[server]
+headless = true
+enableCORS = false
+enableXsrfProtection = false
+
+[browser]
+gatherUsageStats = false
+
+[theme]
+primaryColor = "#2d6a4f"
